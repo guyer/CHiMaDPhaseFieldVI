@@ -20,8 +20,9 @@ try:
     print "os.getcwd():", os.getcwd()
     project = load_project(os.getcwd())
     print "project:", project
-    record = project.get_record(params["sumatra_label"])
     print "sumatra_label:", params["sumatra_label"]
+    record = project.get_record(params["sumatra_label"])
+    print "record:", record
     output = record.datastore.root
     print "output:", output
 except:
