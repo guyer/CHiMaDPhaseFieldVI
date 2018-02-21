@@ -17,9 +17,13 @@ with open(yamlfile, 'r') as f:
 
 try:
     from sumatra.projects import load_project
+    print "os.getcwd():", os.getcwd()
     project = load_project(os.getcwd())
+    print "project:", project
     record = project.get_record(params["sumatra_label"])
+    print "sumatra_label:", params["sumatra_label"]
     output = record.datastore.root
+    print "output:", output
 except:
     # either there's no sumatra, no sumatra project, or no sumatra_label
     # this will be the case if this script is run directly
