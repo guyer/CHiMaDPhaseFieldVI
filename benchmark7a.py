@@ -113,7 +113,8 @@ while time.value <= 8.0:
     eq.solve(var=eta, dt=dt)
     time.value = time() + dt
     
-data['error'] = eta - eta_fp(xx, yy, time - dt)
+error = eta - eta_fp(xx, yy, time - dt)
+error.name = r"$\Delta\eta$"
 
-fp.tools.dump.write(eta,
+fp.tools.dump.write((eta, error),
                     filename=data["eta.tar.gz"].make().abspath)
