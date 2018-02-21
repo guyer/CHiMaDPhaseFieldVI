@@ -114,5 +114,6 @@ while time.value <= 8.0:
 error = eta - eta_fp(xx, yy, time - dt)
 error.name = r"$\Delta\eta$"
 
-fp.tools.dump.write((eta, error),
-                    filename=data["eta.tar.gz"].make().abspath)
+if parallelComm.procID == 0:
+    fp.tools.dump.write((eta, error),
+                        filename=data["eta.tar.gz"].make().abspath)
