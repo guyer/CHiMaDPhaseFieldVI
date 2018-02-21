@@ -1,0 +1,5 @@
+Lx: 1.         # length of mesh
+Ly: 0.5        # height of mesh
+nx: 100        # number of cells in x
+dt: 1.e-2       # timestep
+kappa: 0.0004  # gradient energy coefficient
