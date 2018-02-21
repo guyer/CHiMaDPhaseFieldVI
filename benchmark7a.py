@@ -81,9 +81,7 @@ kappa_fp = float(kappa.subs(parameters))
 # solve
 
 dt = params['dt']
-print type(dt), dt
 Lx = params['Lx']
-print type(Lx), Lx
 Ly = params['Ly']
 
 nx = params['nx']
