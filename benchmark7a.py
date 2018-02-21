@@ -12,8 +12,6 @@ from sympy.physics.vector import ReferenceFrame, dynamicsymbols, time_derivative
 N = ReferenceFrame('N')
 t = symbols('t')
 
-init_printing(use_unicode=True)
-
 # symbolic form
 
 # alpha = symbols('a')
