@@ -1,7 +1,38 @@
 # script based on 
 # https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 
+import os
+import sys
+import yaml
+
+import datreant.core as dtr
+
 import fipy as fp
+from fipy.tools import parallelComm
+
+yamlfile = sys.argv[1]
+
+with open(yamlfile, 'r') as f:
+    params = yaml.load(f)
+
+try:
+    from sumatra.projects import load_project
+    project = load_project(os.getcwd())
+    record = project.get_record(params["sumatra_label"])
+    output = record.datastore.root
+except:
+    # either there's no sumatra, no sumatra project, or no sumatra_label
+    # this will be the case if this script is run directly
+    output = os.getcwd()
+
+if parallelComm.procID == 0:
+    print "storing results in {0}".format(output)
+    data = dtr.Treant(output)
+else:
+    class dummyTreant(object):
+        categories = dict()
+
+    data = dummyTreant()
 
 from sympy import Symbol, symbols, simplify, init_printing
 from sympy import Eq, sin, cos, tanh, sqrt, pi
@@ -33,7 +64,7 @@ eq_sol = simplify(time_derivative(eta_sol, N)
                   
 # substitute coefficient values
 
-parameters = ((kappa, 0.0004), 
+parameters = ((kappa, params['kappa']),
               (A1, 0.0075), (B1, 8.0 * pi), 
               (A2, 0.03), (B2, 22.0 * pi), 
               (C2, 0.0625 * pi))
@@ -49,11 +80,13 @@ kappa_fp = float(kappa.subs(parameters))
 
 # solve
 
-dt = 1e-2
-Lx = 1.
-Ly = 0.5
+dt = params['dt']
+print type(dt), dt
+Lx = params['Lx']
+print type(Lx), Lx
+Ly = params['Ly']
 
-nx = 100
+nx = params['nx']
 
 ny = int(nx * Ly / Lx)
 dx = Lx / nx
@@ -80,5 +113,7 @@ while time.value <= 8.0:
     eq.solve(var=eta, dt=dt)
     time.value = time() + dt
     
-deta = eta - eta_fp(xx, yy, time - dt)
+data['error'] = eta - eta_fp(xx, yy, time - dt)
 
+fp.tools.dump.write(eta,
+                    filename=data["eta.tar.gz"].make().abspath)
