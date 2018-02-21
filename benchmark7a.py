@@ -115,5 +115,10 @@ error = eta - eta_fp(xx, yy, time - dt)
 error.name = r"$\Delta\eta$"
 
 if parallelComm.procID == 0:
-    fp.tools.dump.write((eta, error),
-                        filename=data["eta.tar.gz"].make().abspath)
+    fname = data["eta.tar.gz"].make().abspath
+else:
+    fname = None
+
+fname = parallelComm.bcast(fname)
+
+fp.tools.dump.write((eta, error), filename=fname)
