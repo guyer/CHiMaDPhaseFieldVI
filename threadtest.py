@@ -80,6 +80,7 @@ kappa_fp = float(kappa.subs(parameters))
 
 # solve
 
+totaltime = params['totaltime']
 dt = params['dt']
 Lx = params['Lx']
 Ly = params['Ly']
@@ -106,7 +107,7 @@ eq = (fp.TransientTerm() ==
       - 4 * eta * (eta - 1) * (eta - 0.5) 
       + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, time))
 
-while time.value <= 8.0:
+while time.value <= totaltime:
     eta.updateOld()
     eq.solve(var=eta, dt=dt)
     time.value = time() + dt
