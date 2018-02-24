@@ -3,6 +3,7 @@
 
 import os
 import sys
+import time
 import yaml
 
 import datreant.core as dtr
@@ -95,7 +96,7 @@ mesh = fp.PeriodicGrid2DLeftRight(nx=nx, dx=dx, ny=ny, dy=dx)
 xx, yy = mesh.cellCenters[0], mesh.cellCenters[1]
 XX, YY = mesh.faceCenters[0], mesh.faceCenters[1]
 
-time = fp.Variable(name="$t$", value=0.)
+elapsed = fp.Variable(name="$t$", value=0.)
 
 eta = fp.CellVariable(mesh=mesh, name="$eta$", hasOld=True)
 eta.constrain(1., where=YY==0.)
@@ -105,18 +106,23 @@ eta.value = eta_fp(xx, yy, 0.)
 
 eq = (fp.TransientTerm() == 
       - 4 * eta * (eta - 1) * (eta - 0.5) 
-      + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, time))
+      + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
 
-while time.value <= totaltime:
+start = time.time()
+
+while elapsed.value <= totaltime:
     eta.updateOld()
     eq.solve(var=eta, dt=dt)
-    time.value = time() + dt
-    
-error = eta - eta_fp(xx, yy, time - dt)
+    elapsed.value = elapsed() + dt
+
+end = time.time()
+
+error = eta - eta_fp(xx, yy, elapsed - dt)
 error.name = r"$\Delta\eta$"
 
 if parallelComm.procID == 0:
     fname = data["eta.tar.gz"].make().abspath
+    data["solvetime"] = end - start
 else:
     fname = None
 
