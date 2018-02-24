@@ -117,12 +117,13 @@ while elapsed.value <= totaltime:
 
 end = time.time()
 
+data.categories["solvetime"] = end - start
+
 error = eta - eta_fp(xx, yy, elapsed - dt)
 error.name = r"$\Delta\eta$"
 
 if parallelComm.procID == 0:
     fname = data["eta.tar.gz"].make().abspath
-    data["solvetime"] = end - start
 else:
     fname = None
 
