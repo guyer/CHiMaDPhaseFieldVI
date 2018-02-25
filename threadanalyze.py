@@ -26,30 +26,17 @@ df2 = df.merge(df.parameters.apply(parameters2columns), left_index=True, right_i
 
 df2 = df2[df2['tags'].map(lambda x: 'threads' in x)]
 
-# print df2
-
 data = dtr.Treant('Data/')
 
 data = data[list(df2['label'])]
 
 df3 = pd.DataFrame(index=data.names, data={'solvetime': data.bundle.categories['solvetime']})
 
-# print df3
-
 df4 = df2.merge(df3, left_on='label', right_index=True)
 
 # print df4[['label', 'timestamp', '--ncpus', '--nthreads', '--nslots', '--nx', 'duration', 'solvetime']] 
-
-# print df4[['label', 'timestamp', '--ncpus', '--nthreads', '--nslots', '--nx', 'duration', 'solvetime']]
-
-# print df2[['label', 'timestamp', 'duration', '--ncpus', '--nthreads', '--nslots', '--nx']]
 
 plt.plot(df4['--nthreads'], df4['duration'], linestyle="", marker="x")
 plt.plot(df4['--nthreads'], df4['solvetime'], linestyle="", marker="+")
 
 plt.show()
-
-raw_input("waiting...")
-
-
-
