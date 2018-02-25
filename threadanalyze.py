@@ -32,7 +32,12 @@ df4 = df4[df4['tags'].map(lambda x: '_finished_' in x and 'threads' in x)]
 
 # print df4[['label', 'timestamp', '--ncpus', '--nthreads', '--nslots', '--nx', 'duration', 'solvetime']] 
 
-plt.plot(df4['nthreads'], df4['duration'], linestyle="", marker="x")
-plt.plot(df4['nthreads'], df4['solvetime'], linestyle="", marker="+")
+slots16 = df4[df4['nslots'] == 16]
+slots32 = df4[df4['nslots'] == 32]
+
+plt.plot(slots16['nthreads'], slots16['duration'], linestyle="", marker="x", color='blue')
+plt.plot(slots16['nthreads'], slots16['solvetime'], linestyle="", marker="+", color='blue')
+plt.plot(slots32['nthreads'], slots32['duration'], linestyle="", marker="x", color='red')
+plt.plot(slots32['nthreads'], slots32['solvetime'], linestyle="", marker="+", color='red')
 
 plt.show()
