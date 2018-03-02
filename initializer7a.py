@@ -113,10 +113,10 @@ cmd += [sys.executable, "leaker7a.py", yamlfile]
 start = time.time()
 
 chunk = 1000
-numchunks = int(data["numsteps"] / chunk)
-chunk = int(data["numsteps"] / numchunks)
+numchunks = int(data.categories["numsteps"] / chunk)
+chunk = int(data.categories["numsteps"] / numchunks)
 
-for startfrom in range(0, data["numsteps"], chunk):
+for startfrom in range(0, data.categories["numsteps"], chunk):
     p = subprocess.Popen(cmd + [str(startfrom), str(chunk)], cwd=os.getcwd(), shell=True, 
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=(platform.system() == 'Linux'))
     p.wait()
