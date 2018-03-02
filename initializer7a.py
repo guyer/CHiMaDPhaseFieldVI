@@ -63,19 +63,24 @@ parameters = ((kappa, params['kappa']),
               (A2, 0.03), (B2, 22.0 * pi), 
               (C2, 0.0625 * pi))
 
-with open(data["symbolic.pickle"].make().abspath, 'wb') as f:
-    pickle.dump((eq_sol, eta_sol, kappa, N, t, parameters), f, pickle.HIGHEST_PROTOCOL)
-
 # substitute coefficient values
 
 subs = [sub.subs(parameters) for sub in (eq_sol, eta_sol)]
 
 # generate FiPy lambda functions
 
-from sympy.utilities.lambdify import lambdify
+from sympy.utilities.lambdify import lambdify, lambdastr
 
 (eq_fp, eta_fp) = [lambdify((N[0], N[1], t), sub, modules=fp.numerix) for sub in subs]
 kappa_fp = float(kappa.subs(parameters))
+
+# Can't pickle lambda functions
+
+(eq_str, eta_str) = [lambdastr((N[0], N[1], t), sub) for sub in subs]
+
+data.categories["eq"] = eq_str
+data.categories["eta"] = eta_str
+data.categories["kappa"] = kappa_fp
 
 # initialize and store variables
 
@@ -120,7 +125,8 @@ chunk = int(data.categories["numsteps"] / numchunks)
 
 for startfrom in range(0, data.categories["numsteps"], chunk):
     print cmd + [str(startfrom), str(chunk)]
-    p = subprocess.Popen(cmd + [str(startfrom), str(chunk)], cwd=os.getcwd(), shell=True, 
+    cmdstr = " ".join(cmd + [str(startfrom), str(chunk)])
+    p = subprocess.Popen(cmdstr, cwd=os.getcwd(), shell=True, 
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=(platform.system() == 'Linux'))
     p.wait()
 

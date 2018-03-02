@@ -11,10 +11,6 @@ import datreant.core as dtr
 import fipy as fp
 from fipy.tools import parallelComm
 
-raise Exception("is this even running?")
-
-print "got here"
-
 yamlfile = sys.argv[1]
 startfrom = int(sys.argv[2])
 numsteps = int(sys.argv[3])
@@ -40,24 +36,15 @@ else:
 
     data = dummyTreant()
 
+from fipy.tools.numerix import tanh, sqrt, sin, cos, pi
 if parallelComm.procID == 0:
-    with open(data["symbolic.pickle"].make().abspath, 'rb') as f:
-        eq_sol, eta_sol, kappa, N, t, parameters = pickle.load(f)
+    eq_fp = eval(data.categories["eq"])
+    eta_fp = eval(data.categories["eta"])
+    kappa_fp = data.categories["kappa"]
+else:
+    eq_fp = eta_fp = kappa_fp = None
 
-eq_sol, eta_sol, kappa, N, t, parameters = parallelComm.bcast((eq_sol, eta_sol, kappa, N, t, parameters))
-
-print "and here"
-
-# substitute coefficient values
-
-subs = [sub.subs(parameters) for sub in (eq_sol, eta_sol)]
-
-# generate FiPy lambda functions
-
-from sympy.utilities.lambdify import lambdify
-
-(eq_fp, eta_fp) = [lambdify((N[0], N[1], t), sub, modules=fp.numerix) for sub in subs]
-kappa_fp = float(kappa.subs(parameters))
+eq_fp, eta_fp, kappa_fp = parallelComm.bcast(( eq_fp, eta_fp, kappa_fp))
 
 # load checkpoint
 
@@ -102,7 +89,5 @@ if parallelComm.procID == 0:
 else:
     fname = None
 fname = parallelComm.bcast(fname)
-
-print fname
 
 fp.tools.dump.write((eta, error), filename=fname)
