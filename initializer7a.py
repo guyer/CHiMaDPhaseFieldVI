@@ -134,6 +134,8 @@ for startfrom in range(0, data.categories["numsteps"], chunk):
     
     print out
     print >>sys.stderr, err
+    
+    p.terminate()
 
 end = time.time()
 
