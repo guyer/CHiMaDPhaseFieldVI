@@ -130,7 +130,7 @@ for startfrom in range(0, data.categories["numsteps"], chunk):
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
                          close_fds=(platform.system() == 'Linux'))
                          
-    out, err = p2.communicate()  
+    out, err = p.communicate()  
     
     print out
     print >>sys.stderr, err
