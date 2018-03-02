@@ -11,6 +11,8 @@ import datreant.core as dtr
 import fipy as fp
 from fipy.tools import parallelComm
 
+print "got here"
+
 yamlfile = sys.argv[1]
 startfrom = int(sys.argv[2])
 numsteps = int(sys.argv[3])
@@ -41,6 +43,8 @@ if parallelComm.procID == 0:
         eq_sol, eta_sol, kappa, N, t, parameters = pickle.load(f)
 
 eq_sol, eta_sol, kappa, N, t, parameters = parallelComm.bcast((eq_sol, eta_sol, kappa, N, t, parameters))
+
+print "and here"
 
 # substitute coefficient values
 
@@ -96,5 +100,7 @@ if parallelComm.procID == 0:
 else:
     fname = None
 fname = parallelComm.bcast(fname)
+
+print fname
 
 fp.tools.dump.write((eta, error), filename=fname)
