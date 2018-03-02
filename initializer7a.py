@@ -119,7 +119,7 @@ cmd += [sys.executable, "leaker7a.py", yamlfile]
        
 start = time.time()
 
-chunk = 1000
+chunk = 10
 numchunks = int(data.categories["numsteps"] / chunk)
 chunk = int(data.categories["numsteps"] / numchunks)
 
