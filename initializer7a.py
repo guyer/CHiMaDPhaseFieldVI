@@ -64,6 +64,17 @@ parameters = ((kappa, params['kappa']),
 with open(data["symbolic.pickle"].make().abspath, 'wb') as f:
     pickle.dump((eq_sol, eta_sol, kappa, N, t, parameters), f, pickle.HIGHEST_PROTOCOL)
 
+# substitute coefficient values
+
+subs = [sub.subs(parameters) for sub in (eq_sol, eta_sol)]
+
+# generate FiPy lambda functions
+
+from sympy.utilities.lambdify import lambdify
+
+(eq_fp, eta_fp) = [lambdify((N[0], N[1], t), sub, modules=fp.numerix) for sub in subs]
+kappa_fp = float(kappa.subs(parameters))
+
 # initialize and store variables
 
 totaltime = params['totaltime']
@@ -89,8 +100,8 @@ error.name = r"$\Delta\eta$"
 fname = data["step0.tar.gz"].make().abspath
 fp.tools.dump.write((eta, error), filename=fname)
 
-dt.categories["numsteps"] = int(totaltime / dt)
-data.categories["dt_exact"] = totaltime / dt.categories["numsteps"]
+data.categories["numsteps"] = int(totaltime / dt)
+data.categories["dt_exact"] = totaltime / data.categories["numsteps"]
 
 if params['nproc'] > 1:
     cmd = ["mpirun", "-n", params['nproc'], "--wdir", os.getcwd()]
