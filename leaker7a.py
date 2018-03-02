@@ -11,6 +11,8 @@ import datreant.core as dtr
 import fipy as fp
 from fipy.tools import parallelComm
 
+raise Exception("is this even running?")
+
 print "got here"
 
 yamlfile = sys.argv[1]
