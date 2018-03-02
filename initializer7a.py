@@ -111,7 +111,7 @@ data.categories["numsteps"] = int(totaltime / dt)
 data.categories["dt_exact"] = totaltime / data.categories["numsteps"]
 
 if params['nproc'] > 1:
-    cmd = ["/Users/guyer/anaconda/envs/parallel3/bin/mpirun", "-n", str(params['nproc']), "--wdir", os.getcwd()]
+    cmd = ["mpirun", "-n", str(params['nproc']), "--wdir", os.getcwd()]
 else:
     cmd = []
     
@@ -126,9 +126,14 @@ chunk = int(data.categories["numsteps"] / numchunks)
 for startfrom in range(0, data.categories["numsteps"], chunk):
     print cmd + [str(startfrom), str(chunk)]
     cmdstr = " ".join(cmd + [str(startfrom), str(chunk)])
-    p = subprocess.Popen(cmdstr, cwd=os.getcwd(), # shell=True, 
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=(platform.system() == 'Linux'))
-    p.wait()
+    p = subprocess.Popen(cmdstr, cwd=os.getcwd(), shell=True, 
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
+                         close_fds=(platform.system() == 'Linux'))
+                         
+    out, err = p2.communicate()  
+    
+    print out
+    print >>sys.stderr, err
 
 end = time.time()
 
