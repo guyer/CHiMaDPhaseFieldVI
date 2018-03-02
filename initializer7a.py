@@ -111,7 +111,7 @@ data.categories["numsteps"] = int(totaltime / dt)
 data.categories["dt_exact"] = totaltime / data.categories["numsteps"]
 
 if params['nproc'] > 1:
-    cmd = ["mpirun", "-n", str(params['nproc']), "--wdir", os.getcwd()]
+    cmd = ["/Users/guyer/anaconda/envs/parallel3/bin/mpirun", "-n", str(params['nproc']), "--wdir", os.getcwd()]
 else:
     cmd = []
     
