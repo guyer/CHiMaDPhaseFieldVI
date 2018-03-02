@@ -2,6 +2,7 @@
 # https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 
 import os
+import pickle
 import sys
 import time
 import yaml
@@ -9,7 +10,6 @@ import yaml
 import datreant.core as dtr
 
 import fipy as fp
-from fipy.tools import parallelComm
 
 yamlfile = sys.argv[1]
 
@@ -26,14 +26,8 @@ except:
     # this will be the case if this script is run directly
     output = os.getcwd()
 
-if parallelComm.procID == 0:
-    print "storing results in {0}".format(output)
-    data = dtr.Treant(output)
-else:
-    class dummyTreant(object):
-        categories = dict()
-
-    data = dummyTreant()
+print "storing results in {0}".format(output)
+data = dtr.Treant(output)
 
 from sympy import Symbol, symbols, simplify, init_printing
 from sympy import Eq, sin, cos, tanh, sqrt, pi
@@ -62,7 +56,6 @@ eq_sol = simplify(time_derivative(eta_sol, N)
                   + 4 * eta_sol * (eta_sol - 1) * (eta_sol - 0.5) 
                   - divergence(kappa * gradient(eta_sol, N), N))
 
-                  
 # substitute coefficient values
 
 parameters = ((kappa, params['kappa']),
@@ -79,7 +72,10 @@ from sympy.utilities.lambdify import lambdify
 (eq_fp, eta_fp) = [lambdify((N[0], N[1], t), sub, modules=fp.numerix) for sub in subs]
 kappa_fp = float(kappa.subs(parameters))
 
-# solve
+with open(data["symbolic.pickle"].make().abspath, 'wb') as f:
+    pickle.dump((eq_fp, eta_fp, kappa_fp), f, pickle.HIGHEST_PROTOCOL)
+
+# initialize and store variables
 
 totaltime = params['totaltime']
 dt = params['dt']
@@ -94,39 +90,40 @@ dy = Ly / ny
 
 mesh = fp.PeriodicGrid2DLeftRight(nx=nx, dx=dx, ny=ny, dy=dx)
 xx, yy = mesh.cellCenters[0], mesh.cellCenters[1]
-XX, YY = mesh.faceCenters[0], mesh.faceCenters[1]
-
-elapsed = fp.Variable(name="$t$", value=0.)
 
 eta = fp.CellVariable(mesh=mesh, name="$eta$", hasOld=True)
-eta.constrain(1., where=YY==0.)
-eta.constrain(0., where=YY==0.5)
-
 eta.value = eta_fp(xx, yy, 0.)
 
-eq = (fp.TransientTerm() == 
-      - 4 * eta * (eta - 1) * (eta - 0.5) 
-      + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
+error = eta - eta_fp(xx, yy, 0.)
+error.name = r"$\Delta\eta$"
 
+fname = data["step0.tar.gz"].make().abspath
+fp.tools.dump.write((eta, error), filename=fname)
+
+dt.categories["numsteps"] = int(totaltime / dt)
+data.categories["dt_exact"] = totaltime / dt.categories["numsteps"]
+
+if params['nproc'] > 1:
+    cmd = ["mpirun", "-n", params['nproc'], "--wdir", os.getcwd()]
+else:
+    cmd = []
+    
+cmd += [sys.executable, "leaker7a.py", yamlfile]
+       
 start = time.time()
 
-while elapsed.value <= totaltime:
-    eta.updateOld()
-    eq.solve(var=eta, dt=dt)
-    elapsed.value = elapsed() + dt
+chunk = 1000
+numchunks = int(data["numsteps"] / chunk)
+chunk = int(data["numsteps"] / numchunks)
+
+for startfrom in range(0, data["numsteps"], chunk):
+    p = subprocess.Popen(cmd + [str(startfrom), str(chunk)], cwd=os.getcwd(), shell=True, 
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=(platform.system() == 'Linux'))
+    p.wait()
 
 end = time.time()
 
 data.categories["solvetime"] = end - start
 
-error = eta - eta_fp(xx, yy, elapsed - dt)
-error.name = r"$\Delta\eta$"
 
-if parallelComm.procID == 0:
-    fname = data["eta.tar.gz"].make().abspath
-else:
-    fname = None
 
-fname = parallelComm.bcast(fname)
-
-fp.tools.dump.write((eta, error), filename=fname)
