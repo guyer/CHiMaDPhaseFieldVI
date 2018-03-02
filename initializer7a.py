@@ -56,24 +56,13 @@ eq_sol = simplify(time_derivative(eta_sol, N)
                   + 4 * eta_sol * (eta_sol - 1) * (eta_sol - 0.5) 
                   - divergence(kappa * gradient(eta_sol, N), N))
 
-# substitute coefficient values
-
 parameters = ((kappa, params['kappa']),
               (A1, 0.0075), (B1, 8.0 * pi), 
               (A2, 0.03), (B2, 22.0 * pi), 
               (C2, 0.0625 * pi))
-              
-subs = [sub.subs(parameters) for sub in (eq_sol, eta_sol)]
-
-# generate FiPy lambda functions
-
-from sympy.utilities.lambdify import lambdify
-
-(eq_fp, eta_fp) = [lambdify((N[0], N[1], t), sub, modules=fp.numerix) for sub in subs]
-kappa_fp = float(kappa.subs(parameters))
 
 with open(data["symbolic.pickle"].make().abspath, 'wb') as f:
-    pickle.dump((eq_fp, eta_fp, kappa_fp), f, pickle.HIGHEST_PROTOCOL)
+    pickle.dump((eq_sol, eta_sol, kappa, N, t, parameters), f, pickle.HIGHEST_PROTOCOL)
 
 # initialize and store variables
 

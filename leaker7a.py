@@ -38,9 +38,20 @@ else:
 
 if parallelComm.procID == 0:
     with open(data["symbolic.pickle"].make().abspath, 'rb') as f:
-        eq_fp, eta_fp, kappa_fp = pickle.load(f)
+        eq_sol, eta_sol, kappa, N, t, parameters = pickle.load(f)
 
-eq_fp, eta_fp, kappa_fp = parallelComm.bcast((eq_fp, eta_fp, kappa_fp))
+eq_sol, eta_sol, kappa, N, t, parameters = parallelComm.bcast((eq_sol, eta_sol, kappa, N, t, parameters))
+
+# substitute coefficient values
+
+subs = [sub.subs(parameters) for sub in (eq_sol, eta_sol)]
+
+# generate FiPy lambda functions
+
+from sympy.utilities.lambdify import lambdify
+
+(eq_fp, eta_fp) = [lambdify((N[0], N[1], t), sub, modules=fp.numerix) for sub in subs]
+kappa_fp = float(kappa.subs(parameters))
 
 # load checkpoint
 
