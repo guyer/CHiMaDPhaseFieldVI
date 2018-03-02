@@ -3,6 +3,7 @@
 
 import os
 import pickle
+import platform
 import subprocess
 import sys
 import time
