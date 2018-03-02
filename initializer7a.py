@@ -126,7 +126,7 @@ chunk = int(data.categories["numsteps"] / numchunks)
 for startfrom in range(0, data.categories["numsteps"], chunk):
     print cmd + [str(startfrom), str(chunk)]
     cmdstr = " ".join(cmd + [str(startfrom), str(chunk)])
-    p = subprocess.Popen(cmdstr, cwd=os.getcwd(), shell=True, 
+    p = subprocess.Popen(cmdstr, cwd=os.getcwd(), # shell=True, 
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=(platform.system() == 'Linux'))
     p.wait()
 
