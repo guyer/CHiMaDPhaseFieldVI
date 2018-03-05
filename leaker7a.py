@@ -76,7 +76,7 @@ eq = (fp.TransientTerm() ==
       - 4 * eta * (eta - 1) * (eta - 0.5) 
       + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
 
-for step in range(numsteps):
+for step in range(1, numsteps+1):
     eta.updateOld()
     eq.solve(var=eta, dt=dt)
     elapsed.value = elapsed() + dt
