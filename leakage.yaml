@@ -1,0 +1,7 @@
+Lx: 1.         # length of mesh
+Ly: 0.5        # height of mesh
+nx: 400        # number of cells in x
+totaltime: 0.4 # duration of simulations
+dt: 1.e-4      # timestep
+kappa: 0.0004  # gradient energy coefficient
+nproc: 2       # number of processors to run on
