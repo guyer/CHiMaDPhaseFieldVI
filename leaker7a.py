@@ -36,15 +36,18 @@ else:
 
     data = dummyTreant()
 
-from fipy.tools.numerix import tanh, sqrt, sin, cos, pi
 if parallelComm.procID == 0:
-    eq_fp = eval(data.categories["eq"])
-    eta_fp = eval(data.categories["eta"])
+    eq_str = data.categories["eq"]
+    eta_str = data.categories["eta"]
     kappa_fp = data.categories["kappa"]
 else:
-    eq_fp = eta_fp = kappa_fp = None
+    eq_str = eta_str = kappa_fp = None
 
-eq_fp, eta_fp, kappa_fp = parallelComm.bcast(( eq_fp, eta_fp, kappa_fp))
+eq_str, eta_str, kappa_fp = parallelComm.bcast((eq_str, eta_str, kappa_fp))
+
+from fipy.tools.numerix import tanh, sqrt, sin, cos, pi
+eq_fp = eval(eq_str)
+eta_fp = eval(eta_str)
 
 # load checkpoint
 
