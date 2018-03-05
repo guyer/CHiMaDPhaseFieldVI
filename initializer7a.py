@@ -129,12 +129,7 @@ for startfrom in range(0, data.categories["numsteps"], chunk):
     p = subprocess.Popen(cmdstr, shell=True) #, 
 #                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, 
 #                         close_fds=(platform.system() == 'Linux'))
-                         
-    out, err = p.communicate()  
-    
-    print out
-    print >>sys.stderr, err
-    
+
     p.wait()
 
 end = time.time()
