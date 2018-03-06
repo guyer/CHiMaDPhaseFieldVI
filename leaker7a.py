@@ -1,6 +1,11 @@
 # script based on 
 # https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 
+# sympy knows that 1/2 is 0.5, but by the time we're eval'ing
+# eta_str, that information is lost
+
+from __future__ import division
+
 import os
 import pickle
 import sys
