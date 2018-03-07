@@ -14,4 +14,4 @@ fi
 
 OUTPUT="mprofile_${OUTPUT}"
 
-mpiexec -n 1 mprof run --include-children --multiprocess --output $OUTPUT smt run --tag meshsize -n $NSLOTS --main benchmark7a.py params.yaml  nx=$nx dt=1.e-4 nthreads=$OMP_NUM_THREADS ncpus=$NSLOTS nslots=$NSLOTS $@
+mprof run --include-children --multiprocess --output $OUTPUT smt run --tag meshsize --main initializer7a.py params.yaml  nx=$nx dt=1.e-4 checkpoint=1.e-2 nthreads=$OMP_NUM_THREADS ncpus=$NSLOTS nslots=$NSLOTS $@
