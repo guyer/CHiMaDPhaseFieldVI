@@ -119,7 +119,7 @@ cmd += [sys.executable, "leaker7a.py", yamlfile]
        
 start = time.time()
 
-chunk = int(dt / params['checkpoint'])
+chunk = int(params['checkpoint'] / dt)
 
 for startfrom in range(0, data.categories["numsteps"], chunk):
     cmdstr = " ".join(cmd + [str(startfrom), str(chunk)])
