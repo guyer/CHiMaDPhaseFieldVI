@@ -13,14 +13,10 @@ import datreant.core as dtr
 
 import fipy as fp
 
-print >>sys.stderr, "eeny"
-
 yamlfile = sys.argv[1]
 
 with open(yamlfile, 'r') as f:
     params = yaml.load(f)
-
-print >>sys.stderr, "meeny"
 
 try:
     from sumatra.projects import load_project
@@ -32,8 +28,6 @@ except:
     # this will be the case if this script is run directly
     output = os.getcwd()
 
-print >>sys.stderr, "miney"
-    
 print "storing results in {0}".format(output)
 data = dtr.Treant(output)
 
