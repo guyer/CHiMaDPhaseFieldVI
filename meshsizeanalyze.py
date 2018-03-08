@@ -30,6 +30,8 @@ df["dx"] = df["Lx"] / df["nx"]
 
 plt.loglog(df["dx"], df["error"], linestyle="", marker="x", color='blue')
 
+df.to_csv("meshsize.csv", columns=["dx", "error"], index=False)
+
 slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(df["dx"]),
                                                                fp.tools.numerix.log10(df["error"]))
 
