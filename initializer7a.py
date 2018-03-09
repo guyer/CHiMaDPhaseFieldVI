@@ -108,6 +108,7 @@ fname = data["step0.tar.gz"].make().abspath
 fp.tools.dump.write((eta, error), filename=fname)
 
 data.categories["numsteps"] = int(totaltime / dt)
+data.categories["dt_exact"] = totaltime / data.categories["numsteps"]
 
 if params['nproc'] > 1:
     cmd = ["mpirun", "-n", str(params['nproc']), "--wdir", os.getcwd()]
