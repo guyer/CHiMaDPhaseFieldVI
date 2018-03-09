@@ -1,3 +1,6 @@
+import glob
+import os
+
 import matplotlib
 matplotlib.use('TkAgg') 
 from matplotlib import pyplot as plt
@@ -19,8 +22,16 @@ data = data[list(df.index)]
 
 errors = []
 for d in data:
-    eta, error = fp.tools.dump.read(filename=d["eta.tar.gz"].make().abspath)
-    errors.append(fp.tools.numerix.sqrt((error**2).cellVolumeAverage * error.mesh.cellVolumes.sum()).value)
+    try:
+        fn = glob.glob(os.path.join(d.make().abspath, "step*.tar.gz"))[-1]
+        eta, error = fp.tools.dump.read(filename=fn)
+        errors.append(fp.tools.numerix.sqrt((error**2).cellVolumeAverage * error.mesh.cellVolumes.sum()).value)
+    except:
+        try:
+            eta, error = fp.tools.dump.read(filename=d["eta.tar.gz"].make().abspath)
+            errors.append(fp.tools.numerix.sqrt((error**2).cellVolumeAverage * error.mesh.cellVolumes.sum()).value)
+        except:
+            errors.append(fp.tools.numerix.nan)
 
 error_df = pd.DataFrame(index=df.index, data={"error": errors})
 
