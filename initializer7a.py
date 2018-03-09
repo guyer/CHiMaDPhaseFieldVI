@@ -108,7 +108,6 @@ fname = data["step0.tar.gz"].make().abspath
 fp.tools.dump.write((eta, error), filename=fname)
 
 data.categories["numsteps"] = int(totaltime / dt)
-data.categories["dt_exact"] = totaltime / data.categories["numsteps"]
 
 if params['nproc'] > 1:
     cmd = ["mpirun", "-n", str(params['nproc']), "--wdir", os.getcwd()]
@@ -119,10 +118,11 @@ cmd += [sys.executable, "leaker7a.py", yamlfile]
        
 start = time.time()
 
-chunk = int(params['checkpoint'] / dt)
+chunk = 1000
 
 for startfrom in range(0, data.categories["numsteps"], chunk):
-    cmdstr = " ".join(cmd + [str(startfrom), str(chunk)])
+    thischunk = min(chunk, data.categories["numsteps"] - startfrom)
+    cmdstr = " ".join(cmd + [str(startfrom), str(thischunk)])
     p = subprocess.Popen(cmdstr, shell=True, 
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                          close_fds=(platform.system() == 'Linux'))
