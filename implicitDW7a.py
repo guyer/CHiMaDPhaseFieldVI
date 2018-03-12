@@ -65,7 +65,7 @@ eta, _ = fp.tools.dump.read(filename=fname)
 
 mesh = eta.mesh
 xx, yy = mesh.cellCenters[0], mesh.cellCenters[1]
-XX, YY = mesh.faceCenters[0], meshs.faceCenters[1]
+XX, YY = mesh.faceCenters[0], mesh.faceCenters[1]
 
 eta.constrain(1., where=YY==0.)
 eta.constrain(0., where=YY==0.5)
