@@ -82,8 +82,8 @@ elapsed = fp.Variable(name="$t$", value=startfrom * dt)
 # linearize double-well
 m_eta = 2 * (1 - 2 * eta)
 dm_eta_deta = -4.
-DW = m_eta * eta * (1 - eta)
-dDW_deta = dm_eta_deta * eta * (1 - eta) + m_eta * (1 - 2 * eta)
+DW = m_eta * eta * (eta - 1)
+dDW_deta = dm_eta_deta * eta * (eta - 1) + m_eta * (2 * eta - 1)
 eq = (fp.TransientTerm() == 
       (DW - dDW_deta * eta) + fp.ImplicitSourceTerm(coeff=dDW_deta)
       + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
