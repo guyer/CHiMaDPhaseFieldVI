@@ -47,11 +47,10 @@ plt.loglog(df["dt"][:-1], df["error"][:-1] - df["error"][-1], linestyle="", mark
 
 dftrunk = df[df["dt"] >= 1e-2]
 
-plt.loglog(dftrunk["dt"], dftrunk["error"], linestyle="", marker="o", color='red', markerfacecolor="none")
-
 slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"]),
                                                                fp.tools.numerix.log10(dftrunk["error"]))
 
+print "fit to data"
 print "slope:", slope
 print "intercept:", intercept
 print "r_value:", r_value
@@ -64,11 +63,12 @@ y = x**slope * 10**intercept
 plt.loglog(x, y, color='blue')
 
 plt.text(2e-3, 1e-3, """scaling = {:.3f}
-$R^2 = {:.4f}$""".format(slope, r_value**2))
+$R^2 = {:.4f}$""".format(slope, r_value**2), color="blue")
 
 slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"][:-1]),
                                                                fp.tools.numerix.log10(dftrunk["error"][:-1] - df["error"][-1]))
 
+print "fit to data minus baseline"
 print "slope:", slope
 print "intercept:", intercept
 print "r_value:", r_value
@@ -79,6 +79,9 @@ x = fp.tools.numerix.array([min(dftrunk["dt"]), max(dftrunk["dt"])])
 y = x**slope * 10**intercept
 
 plt.loglog(x, y, color='green')
+
+plt.text(3e-2, 1e-4, """scaling = {:.3f}
+$R^2 = {:.4f}$""".format(slope, r_value**2), color="green")
 
 plt.xlabel("time step")
 plt.ylabel("$\|\|\mathrm{error}\|\|_2$")
