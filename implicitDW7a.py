@@ -90,8 +90,8 @@ eq = (fp.TransientTerm() ==
 
 for step in range(1, numsteps+1):
     eta.updateOld()
-    for sweep in range(sweeps):
-        res = eq.solve(var=eta, dt=dt)
+    for sweep in range(params['sweeps']):
+        res = eq.sweep(var=eta, dt=dt)
         print step, sweep, res
     elapsed.value = elapsed() + dt
 
