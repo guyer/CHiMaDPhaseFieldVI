@@ -19,3 +19,8 @@ smt configure --executable python --addlabel parameters \
 
 
 
+# timestep.sh
+
+Invoked on Sun Grid Engine with:
+
+    qsub -t 1-10 -e qsublogs/ -o qsublogs/ -pe nodal 16 -l short=TRUE -cwd timestep.sh totaltime=8.
