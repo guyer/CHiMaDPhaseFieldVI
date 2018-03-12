@@ -117,3 +117,16 @@ complicated (and doesn't work); ditch it.
 
 `smt run --tag` - the tag is not applied until the end?
 
+# 2018-03-12T15:49:43-04:00
+
+Forked `leaker7a.py` into `explicitDW7a.py` (unchanged) and
+`implicitDW7a.py`, which uses a linearized source and `ImplicitSourceTerm`.
+At least for a coarse mesh (`nx = 100`) and moderately large timesteps (`dt
+= 1.e-2`), there is no benefit, in the form of reduced error, for paying
+the additional cost of sweeping.
+
+With explicit double well, L2 error     = 0.006718338421993382
+With semiimplicit double well, L2 error = 0.0067417573984172039
+
+@wd15 thinks timestep is too *small* to benefit from sweeping.
+
