@@ -115,7 +115,7 @@ if params['nproc'] > 1:
 else:
     cmd = []
     
-cmd += [sys.executable, "leaker7a.py", yamlfile]
+cmd += [sys.executable, params['script'], yamlfile]
        
 start = time.time()
 
