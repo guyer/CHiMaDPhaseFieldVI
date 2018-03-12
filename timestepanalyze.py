@@ -40,6 +40,8 @@ error_df = pd.DataFrame(index=df.index, data={"error": errors})
 
 df = df.merge(error_df, left_index=True, right_index=True)
 
+df[["dt_exact", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("timestep.csv")
+
 plt.loglog(df["dt"], df["error"], linestyle="", marker="x", color='blue')
 plt.loglog(df["dt"][:-1], df["error"][:-1] - df["error"][-1], linestyle="", marker="x", color='green')
 
