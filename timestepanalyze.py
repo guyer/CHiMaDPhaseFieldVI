@@ -6,6 +6,7 @@ matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 import datreant.core as dtr
 import pandas as pd
+from scipy import stats
 
 import fipy as fp
 
@@ -38,5 +39,47 @@ error_df = pd.DataFrame(index=df.index, data={"error": errors})
 df = df.merge(error_df, left_index=True, right_index=True)
 
 plt.loglog(df["dt"], df["error"], linestyle="", marker="x", color='blue')
+plt.loglog(df["dt"][:-1], df["error"][:-1] - df["error"][-1], linestyle="", marker="x", color='green')
+
+dftrunk = df[df["dt"] >= 1e-2]
+
+plt.loglog(dftrunk["dt"], dftrunk["error"], linestyle="", marker="o", color='red', markerfacecolor="none")
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"]),
+                                                               fp.tools.numerix.log10(dftrunk["error"]))
+
+print "slope:", slope
+print "intercept:", intercept
+print "r_value:", r_value
+print "p_value:", p_value
+print "std_err:", std_err
+
+x = fp.tools.numerix.array([min(dftrunk["dt"]), max(dftrunk["dt"])])
+y = x**slope * 10**intercept
+
+plt.loglog(x, y, color='blue')
+
+plt.text(2e-3, 1e-3, """scaling = {:.3f}
+$R^2 = {:.4f}$""".format(slope, r_value**2))
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"][:-1]),
+                                                               fp.tools.numerix.log10(dftrunk["error"][:-1] - df["error"][-1]))
+
+print "slope:", slope
+print "intercept:", intercept
+print "r_value:", r_value
+print "p_value:", p_value
+print "std_err:", std_err
+
+x = fp.tools.numerix.array([min(dftrunk["dt"]), max(dftrunk["dt"])])
+y = x**slope * 10**intercept
+
+plt.loglog(x, y, color='green')
+
+plt.xlabel("time step")
+plt.ylabel("$\|\|\mathrm{error}\|\|_2$")
+
+plt.savefig("timestep.png")
+
 
 plt.show()
