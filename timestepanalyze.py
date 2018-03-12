@@ -17,7 +17,8 @@ df = load_sumatreant(project_name='benchmark7')
 df = df[df['tags'].map(lambda x: '_finished_' in x and 'timestep' in x)]
 df = df[(df["totaltime"] == 8.0) & (df["nx"] == 800)]
 
-# print df[['label', 'timestamp', '--ncpus', '--nthreads', '--nslots', '--nx', 'duration', 'solvetime']] 
+# some (unsuccessful) runs recorded nonsensical timesteps as string type
+df["dt"] = df["dt"].astype(float)
 
 data = dtr.Treant("Data/")
 data = data[list(df.index)]
