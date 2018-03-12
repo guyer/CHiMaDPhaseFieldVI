@@ -65,7 +65,7 @@ eta, _ = fp.tools.dump.read(filename=fname)
 
 mesh = eta.mesh
 xx, yy = mesh.cellCenters[0], mesh.cellCenters[1]
-XX, YY = mesh.faceCenters[0], mesh.faceCenters[1]
+XX, YY = mesh.faceCenters[0], meshs.faceCenters[1]
 
 eta.constrain(1., where=YY==0.)
 eta.constrain(0., where=YY==0.5)
@@ -79,13 +79,20 @@ dt = parallelComm.bcast(dt)
 
 elapsed = fp.Variable(name="$t$", value=startfrom * dt)
 
+# linearize double-well
+m_eta = 2 * (1 - 2 * eta)
+dm_eta_deta = -4.
+DW = m_eta * eta * (1 - eta)
+dDW_deta = dm_eta_deta * eta * (1 - eta) + m_eta * (1 - 2 * eta)
 eq = (fp.TransientTerm() == 
-      - 4 * eta * (eta - 1) * (eta - 0.5) 
+      (DW - dDW_deta * eta) + fp.ImplicitSourceTerm(coeff=dDW_deta)
       + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
 
 for step in range(1, numsteps+1):
     eta.updateOld()
-    eq.solve(var=eta, dt=dt)
+    for sweep in range(sweeps):
+        res = eq.solve(var=eta, dt=dt)
+        print step, sweep, res
     elapsed.value = elapsed() + dt
 
 error = eta - eta_fp(xx, yy, elapsed - dt)
