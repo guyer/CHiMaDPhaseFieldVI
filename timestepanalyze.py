@@ -45,6 +45,9 @@ df[["dt_exact", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("timeste
 plt.loglog(df["dt"], df["error"], linestyle="", marker="x", color='blue')
 plt.loglog(df["dt"][:-1], df["error"][:-1] - df["error"][-1], linestyle="", marker="x", color='green')
 
+implicit = df[df["script"] == "implicitDW7a.py"]
+plt.loglog(implicit["dt"], implicit["error"], linestyle="", marker="x", color='red')
+
 dftrunk = df[df["dt"] >= 1e-2]
 
 slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"]),
