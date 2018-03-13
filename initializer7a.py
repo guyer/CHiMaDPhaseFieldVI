@@ -85,7 +85,7 @@ data.categories["kappa"] = kappa_fp
 # initialize and store variables
 
 totaltime = params['totaltime']
-dt = params['dt']
+dt = float(params['dt'])
 Lx = params['Lx']
 Ly = params['Ly']
 
