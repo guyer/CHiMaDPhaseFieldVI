@@ -40,18 +40,22 @@ error_df = pd.DataFrame(index=df.index, data={"error": errors})
 
 df = df.merge(error_df, left_index=True, right_index=True)
 
-df[["dt_exact", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("timestep.csv")
+explicit = df[df["script"] != "implicitDW7a.py"].sort_values("dt")
+implicit = df[df["script"] == "implicitDW7a.py"].sort_values("dt")
 
-plt.loglog(df["dt"], df["error"], linestyle="", marker="x", color='blue')
-plt.loglog(df["dt"][:-1], df["error"][:-1] - df["error"][-1], linestyle="", marker="x", color='green')
+explicit[["dt_exact", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("timestep_explicitDW.csv")
+implicit[["dt_exact", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("timestep_implicitDW.csv")
 
-implicit = df[df["script"] == "implicitDW7a.py"]
+plt.loglog(explicit["dt"], explicit["error"], linestyle="", marker="x", color='blue')
+plt.loglog(explicit["dt"][:-1], explicit["error"][:-1] - explicit["error"][-1], linestyle="", marker="+", color='blue')
+
 plt.loglog(implicit["dt"], implicit["error"], linestyle="", marker="x", color='red')
+plt.loglog(implicit["dt"][:-1], implicit["error"][:-1] - implicit["error"][-1], linestyle="", marker="+", color='red')
 
-dftrunk = df[df["dt"] >= 1e-2]
+expl_trunc = explicit[df["dt"] >= 1e-2]
 
-slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"]),
-                                                               fp.tools.numerix.log10(dftrunk["error"]))
+slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(expl_trunc["dt"]),
+                                                               fp.tools.numerix.log10(expl_trunc["error"]))
 
 print "fit to data"
 print "slope:", slope
@@ -60,7 +64,7 @@ print "r_value:", r_value
 print "p_value:", p_value
 print "std_err:", std_err
 
-x = fp.tools.numerix.array([min(dftrunk["dt"]), max(dftrunk["dt"])])
+x = fp.tools.numerix.array([min(expl_trunc["dt"]), max(expl_trunc["dt"])])
 y = x**slope * 10**intercept
 
 plt.loglog(x, y, color='blue')
@@ -68,8 +72,8 @@ plt.loglog(x, y, color='blue')
 plt.text(2e-3, 1e-3, """scaling = {:.3f}
 $R^2 = {:.4f}$""".format(slope, r_value**2), color="blue")
 
-slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(dftrunk["dt"][:-1]),
-                                                               fp.tools.numerix.log10(dftrunk["error"][:-1] - df["error"][-1]))
+slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(expl_trunc["dt"][:-1]),
+                                                               fp.tools.numerix.log10(expl_trunc["error"][:-1] - df["error"][-1]))
 
 print "fit to data minus baseline"
 print "slope:", slope
@@ -78,7 +82,7 @@ print "r_value:", r_value
 print "p_value:", p_value
 print "std_err:", std_err
 
-x = fp.tools.numerix.array([min(dftrunk["dt"]), max(dftrunk["dt"])])
+x = fp.tools.numerix.array([min(expl_trunc["dt"]), max(expl_trunc["dt"])])
 y = x**slope * 10**intercept
 
 plt.loglog(x, y, color='green')
