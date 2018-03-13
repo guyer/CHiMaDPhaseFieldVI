@@ -28,12 +28,16 @@ error_df = pd.DataFrame(index=df.index, data={"error": errors})
 df = df.merge(error_df, left_index=True, right_index=True)
 df["dx"] = df["Lx"] / df["nx"]
 
-plt.loglog(df["dx"], df["error"], linestyle="", marker="x", color='blue')
+explicit = df[df["script"] != "implicitDW7a.py"].sort_values("dx")
+implicit = df[df["script"] == "implicitDW7a.py"].sort_values("dx")
 
-df.to_csv("meshsize.csv", columns=["dx", "error"], index=False)
+explicit[["dt_exact", "dx", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("meshsize_explicitDW.csv")
+implicit[["dt_exact", "dx", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("meshsize_implicitDW.csv")
 
-slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(df["dx"]),
-                                                               fp.tools.numerix.log10(df["error"]))
+plt.loglog(explicit["dx"], explicit["error"], linestyle="", marker="x", color='blue')
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(explicit["dx"]),
+                                                               fp.tools.numerix.log10(explicit["error"]))
 
 print "slope:", slope
 print "intercept:", intercept
@@ -50,7 +54,7 @@ plt.xlabel("mesh size")
 plt.ylabel("$\|\|\mathrm{error}\|\|_2$")
 
 plt.text(2e-3, 4e-3, """scaling = {:.3f}
-$R^2 = {:.3f}$""".format(slope, r_value**2))
+$R^2 = {:.4f}$""".format(slope, r_value**2))
 
 plt.savefig("meshsize.png")
 
