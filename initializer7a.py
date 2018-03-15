@@ -4,6 +4,7 @@
 import os
 import pickle
 import platform
+import select
 import subprocess
 import sys
 import time
@@ -124,11 +125,28 @@ chunk = 1000
 for startfrom in range(0, data.categories["numsteps"], chunk):
     thischunk = min(chunk, data.categories["numsteps"] - startfrom)
     cmdstr = " ".join(cmd + [str(startfrom), str(thischunk)])
+    print cmdstr
     p = subprocess.Popen(cmdstr, shell=True, 
-                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          close_fds=(platform.system() == 'Linux'))
+    while True:
+        reads = [p.stdout.fileno(), p.stderr.fileno()]
+        ret = select.select(reads, [], [])
 
-    p.wait()
+        for fd in ret[0]:
+            if fd == p.stdout.fileno():
+                read = p.stdout.readline()
+                sys.stdout.write(read)
+                sys.stdout.flush()
+            if fd == p.stderr.fileno():
+                read = p.stderr.readline()
+                sys.stderr.write(read)
+                sys.stderr.flush()
+
+        if p.poll() != None:
+            break
+        
+    print startfrom, "returned", p.wait()
 
 end = time.time()
 
