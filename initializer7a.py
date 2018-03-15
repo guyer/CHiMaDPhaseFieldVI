@@ -150,7 +150,11 @@ for startfrom in range(0, data.categories["numsteps"], chunk):
                 sys.stderr.write(line)
             break
         
-    print startfrom, "returned", p.wait()
+    ret = p.wait()
+    if ret != 0:
+        raise RuntimeException("""\
+{}
+returned: {}""".format(cmdstr, ret))
 
 end = time.time()
 
