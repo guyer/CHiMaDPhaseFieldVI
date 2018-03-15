@@ -125,7 +125,6 @@ chunk = 1000
 for startfrom in range(0, data.categories["numsteps"], chunk):
     thischunk = min(chunk, data.categories["numsteps"] - startfrom)
     cmdstr = " ".join(cmd + [str(startfrom), str(thischunk)])
-    print cmdstr
     p = subprocess.Popen(cmdstr, shell=True, 
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          close_fds=(platform.system() == 'Linux'))
@@ -144,6 +143,11 @@ for startfrom in range(0, data.categories["numsteps"], chunk):
                 sys.stderr.flush()
 
         if p.poll() != None:
+            # ensure all output is flushed out
+            for line in p.stdout.readlines():
+                sys.stdout.write(line)
+            for line in p.stderr.readlines():
+                sys.stderr.write(line)
             break
         
     print startfrom, "returned", p.wait()
