@@ -152,7 +152,7 @@ for startfrom in range(0, data.categories["numsteps"], chunk):
         
     ret = p.wait()
     if ret != 0:
-        raise RuntimeException("""\
+        raise RuntimeError("""\
 {}
 returned: {}""".format(cmdstr, ret))
 
