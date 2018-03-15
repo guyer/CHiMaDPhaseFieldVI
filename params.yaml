@@ -7,3 +7,4 @@ checkpoint: 1.e0 # time interval to checkpoint data and restart
 kappa: 0.0004  # gradient energy coefficient
 nproc: 1       # number of processors to use
 script: explicitDW7a.py # script to iterate on that does actual calculations
+sweeps: 5      # number of non-linear sweeps to do (if used)
