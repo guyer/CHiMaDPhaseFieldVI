@@ -42,6 +42,7 @@ explicit[["dt_exact", "dx", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_
 implicit[["dt_exact", "dx", "kappa_x", "nproc", "nx", "solvetime", "error"]].to_csv("meshsize_implicitDW.csv")
 
 plt.loglog(explicit["dx"], explicit["error"], linestyle="", marker="x", color='blue')
+plt.loglog(implicit["dx"], implicit["error"], linestyle="", marker="+", color='green')
 
 slope, intercept, r_value, p_value, std_err = stats.linregress(fp.tools.numerix.log10(explicit["dx"]),
                                                                fp.tools.numerix.log10(explicit["error"]))
