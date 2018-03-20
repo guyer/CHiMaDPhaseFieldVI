@@ -98,6 +98,8 @@ for step in range(1, numsteps+1):
         res = eq.sweep(var=eta, dt=dt, solver=solver)
     elapsed.value = elapsed() + dt
 
+del solver
+
 error = eta - eta_fp(xx, yy, elapsed - dt)
 error.name = r"$\Delta\eta$"
 
