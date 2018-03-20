@@ -1,3 +1,4 @@
+
 # script based on 
 # https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 
@@ -88,10 +89,13 @@ eq = (fp.TransientTerm() ==
       (DW - dDW_deta * eta) + fp.ImplicitSourceTerm(coeff=dDW_deta)
       + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
 
+solver = eq.getDefaultSolver()
+print "solver:", repr(solver)
+
 for step in range(1, numsteps+1):
     eta.updateOld()
     for sweep in range(params['sweeps']):
-        res = eq.sweep(var=eta, dt=dt)
+        res = eq.sweep(var=eta, dt=dt, solver=solver)
     elapsed.value = elapsed() + dt
 
 error = eta - eta_fp(xx, yy, elapsed - dt)
