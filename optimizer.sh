@@ -26,4 +26,4 @@ fi
 
 OUTPUT="mprofile_${OUTPUT}"
 
-mprof run --include-children --multiprocess --output $OUTPUT smt run --tag optimize --main optimizer7b.py optimizer.yaml nthreads=$OMP_NUM_THREADS ncpus=$NSLOTS nslots=$NSLOTS nproc=$NSLOTS solver=$solver preconditioner=$preconditioner tolerance=$tolerance iterations=$iterations sweeps=$sweeps $@
+mprof run --include-children --multiprocess --output $OUTPUT smt run --tag optimize --main optimizer7bDriver.py optimizer.yaml nthreads=$OMP_NUM_THREADS ncpus=$NSLOTS nslots=$NSLOTS nproc=$NSLOTS solver=$solver preconditioner=$preconditioner tolerance=$tolerance iterations=$iterations sweeps=$sweeps $@
