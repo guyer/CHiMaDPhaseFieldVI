@@ -92,14 +92,14 @@ eq = (fp.TransientTerm() ==
 
 exec("from fipy import Linear{}Solver as SOLVER".format(params['solver']))
 if params['preconditioner'] == "None":
-    precoditioner = None
+    preconditioner = None
 else:
     exec("from fipy import {}Preconditioner as PRECONDITIONER".format(params['preconditioner']))
     preconditioner = PRECONDITIONER()
 
 solver = SOLVER(tolerance=params['tolerance'],
                 iterations=params['iterations'],
-                preconditioner=preconditioner)
+                precon=preconditioner)
 
 print "solver:", repr(solver)
 
