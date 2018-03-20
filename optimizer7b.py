@@ -43,9 +43,9 @@ else:
     data = dummyTreant()
 
 if parallelComm.procID == 0:
-    eq_str = data.categories["eq"]
-    eta_str = data.categories["eta"]
-    kappa_fp = data.categories["kappa"]
+    eq_str = input.categories["eq"]
+    eta_str = input.categories["eta"]
+    kappa_fp = input.categories["kappa"]
 else:
     eq_str = eta_str = kappa_fp = None
 
@@ -90,11 +90,11 @@ eq = (fp.TransientTerm() ==
       (DW - dDW_deta * eta) + fp.ImplicitSourceTerm(coeff=dDW_deta)
       + fp.DiffusionTerm(coeff=kappa_fp) + eq_fp(xx, yy, elapsed))
 
-expr("from fipy import Linear{}Solver as SOLVER".format(params['solver']))
+exec("from fipy import Linear{}Solver as SOLVER".format(params['solver']))
 if params['preconditioner'] == "None":
     precoditioner = None
 else:
-    expr("from fipy import {}Preconditioner as PRECONDITIONER".format(params['preconditioner']))
+    exec("from fipy import {}Preconditioner as PRECONDITIONER".format(params['preconditioner']))
     preconditioner = PRECONDITIONER()
 
 solver = SOLVER(tolerance=params['tolerance'],
