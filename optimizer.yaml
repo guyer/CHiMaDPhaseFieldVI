@@ -1,0 +1,14 @@
+Lx: 1.         # length of mesh
+Ly: 0.5        # height of mesh
+nx: 400        # number of cells in x
+totaltime: 1.0 # duration of simulations
+dt: 1.e-2      # timestep
+checkpoint: 1.e0 # time interval to checkpoint data and restart
+kappa: 0.0004  # gradient energy coefficient
+nproc: 1       # number of processors to use
+script: optimizer7b.py # script to iterate on that does actual calculations
+sweeps: 5      # number of non-linear sweeps to do (if used)
+solver: GMRES  # solver class to use
+preconditioner: None
+tolerance: 1.e-10
+iterations: 1000
