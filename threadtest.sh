@@ -12,4 +12,4 @@ NSLOTS=$SLURM_NTASKS
 NCPUS=$(( NSLOTS / NTHREADS ))
 
 echo export OMP_NUM_THREADS=$NTHREADS
-echo mpiexec -n 1 smt run --tag threads -n $NCPUS --main threadtest.py params.yaml nthreads=$NTHREADS ncpus=$NCPUS nslots=$NSLOTS $@
+echo mpiexec -n 1 smt run --tag threads2 -n $NCPUS --main threadtest.py params.yaml nthreads=$NTHREADS ncpus=$NCPUS nslots=$NSLOTS $@
