@@ -10,10 +10,16 @@ ATTENTION: In `serial` launch_mode, Sumatra *must* *not* be invoked with::
 
 to keep MPICH happy even though `initializer7a.py` invokes `mpirun`.
 
+# Needed for simulation
+
+conda install --channel conda-forge sympy
+pip install -e /data/guyer/fipy
+
 # Sumatra installation
 
 pip install -e /data/guyer/sumatra
 conda install --channel conda-forge datreant gitpython pyyaml
+cp /data/guyer/sumatra/sumatra/pfi.py /path/to/conda/env/bin/
 
 NOTE: As of 2019-12-28, Sumatra has not been updated to Python 3.8 and has a number of incompatibilities
 
