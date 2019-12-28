@@ -27,7 +27,7 @@ except:
     output = os.getcwd()
 
 if parallelComm.procID == 0:
-    print "storing results in {0}".format(output)
+    print("storing results in {0}".format(output))
     data = dtr.Treant(output)
 else:
     class dummyTreant(object):
