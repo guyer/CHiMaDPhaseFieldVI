@@ -9,7 +9,6 @@ with open(yamlfile, 'r') as f:
 
 from sumatra.projects import load_project
 project = load_project(os.getcwd())
-raise Exception(str(project))
 record = project.get_record(params["sumatra_label"])
 raise Exception(str(record))
 output = record.datastore.root
