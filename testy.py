@@ -4,12 +4,11 @@ import yaml
 
 yamlfile = sys.argv[1]
 
-raise Exception(yamlfile)
-
 with open(yamlfile, 'r') as f:
     params = yaml.load(f)
 
-    
+raise Exception(str(params))
+
 from sumatra.projects import load_project
 project = load_project(os.getcwd())
 record = project.get_record(params["sumatra_label"])
