@@ -1,6 +1,6 @@
 import pandas as pd
 from sumatra.projects import load_project
-import datreant.core as dtr
+import datreant as dtr
 import yaml
 
 def load_sumatreant(project_name, path=None):
@@ -21,7 +21,8 @@ def load_sumatreant(project_name, path=None):
 
     data = dtr.Treant(project.data_store.root)
     data = data[list(smt_df.index)]
+    data = dtr.Bundle(data.abspaths)
 
-    dtr_df = pd.DataFrame(index=data.names, data=data.bundle.categories.any)
+    dtr_df = pd.DataFrame(index=data.names, data=data.categories.any)
 
     return smt_df.merge(dtr_df, left_index=True, right_index=True)
