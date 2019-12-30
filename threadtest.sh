@@ -8,6 +8,9 @@
 CONDAENV=$1
 SOLVER=$2
 
+shift
+shift
+
 source activate $CONDAENV
 
 NTHREADS=$(( 2**SLURM_ARRAY_TASK_ID ))
