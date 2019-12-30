@@ -11,7 +11,7 @@ SOLVER=$2
 shift
 shift
 
-source activate $CONDAENV
+echo source activate $CONDAENV
 
 NTHREADS=$(( 2**SLURM_ARRAY_TASK_ID ))
 NSLOTS=$SLURM_NTASKS
