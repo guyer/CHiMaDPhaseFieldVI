@@ -11,7 +11,7 @@ SOLVER=$2
 shift
 shift
 
-echo source activate $CONDAENV
+conda activate $CONDAENV
 
 NTHREADS=$(( 2**SLURM_ARRAY_TASK_ID ))
 NSLOTS=$SLURM_NTASKS
