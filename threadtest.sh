@@ -19,4 +19,4 @@ NCPUS=$(( NSLOTS / NTHREADS ))
 
 
 export OMP_NUM_THREADS=$NTHREADS
-FIPY_SOLVERS=$SOLVER /data/guyer/miniconda3/envs/$CONDAENV/bin/mpiexec -n 1 smt run --tag thread3 -n $NCPUS --executable /data/guyer/miniconda3/envs/$CONDAENV/bin/python --main threadtest.py params.yaml nthreads=$NTHREADS ncpus=$NCPUS nslots=$NSLOTS solver=$SOLVER $@
+FIPY_SOLVERS=$SOLVER mpiexec -n 1 smt run --tag thread3 -n $NCPUS --executable python --main threadtest.py params.yaml nthreads=$NTHREADS ncpus=$NCPUS nslots=$NSLOTS solver=$SOLVER $@
