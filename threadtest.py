@@ -14,7 +14,12 @@ from fipy.tools import parallelComm
 yamlfile = sys.argv[1]
 
 with open(yamlfile, 'r') as f:
-    params = yaml.load(f)
+    if hasattr(yaml, "FullLoader"):
+        # PyYAML 5.1 deprecated the plain yaml.load(input) function
+        # https://github.com/yaml/pyyaml/wiki/PyYAML-yaml.load(input)-Deprecation
+        params = yaml.load(f, Loader=yaml.FullLoader)
+    else:
+        params = yaml.load(f)
 
 try:
     from sumatra.projects import load_project
