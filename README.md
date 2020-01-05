@@ -18,7 +18,7 @@ pip install -e /data/guyer/fipy
 # Sumatra installation
 
 pip install -e /data/guyer/sumatra
-conda install --channel conda-forge datreant gitpython pyyaml
+conda install --channel conda-forge datreant "gitpython>=2.1.8" pyyaml
 cp /data/guyer/sumatra/sumatra/pfi.py /path/to/conda/env/bin/
 
 NOTE: As of 2019-12-28, Sumatra has not been updated to Python 3.8 and has a number of incompatibilities
