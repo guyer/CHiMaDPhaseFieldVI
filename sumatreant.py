@@ -26,7 +26,7 @@ def load_sumatreant(project_name, path=None):
 
     smt_df = smt_df.merge(prm_df, left_index=True, right_index=True)
 
-    data = project.record_store.datreant
+    data = dtr.Treant(project.data_store.root)
     data = data[list(smt_df.index)]
     data = dtr.Bundle(data.abspaths)
 
