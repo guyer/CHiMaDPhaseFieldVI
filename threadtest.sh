@@ -21,4 +21,5 @@ NCPUS=$(( NSLOTS / NTHREADS ))
 
 
 export OMP_NUM_THREADS=$NTHREADS
-FIPY_SOLVERS=$SOLVER mpiexec -n 1 mprof run --interval 1.0 --include-children --multiprocess --output "/working/guyer/mprofile-${SOLVER}-${NCPUS}cpus-${NTHREADS}threads.dat" smt run --tag $TAG -n $NCPUS --executable python --main threadtest.py params.yaml nthreads=$NTHREADS ncpus=$NCPUS nslots=$NSLOTS solver=$SOLVER $@
+# mprof run --interval 1.0 --include-children --multiprocess --output "/working/guyer/mprofile-${SOLVER}-${NCPUS}cpus-${NTHREADS}threads.dat"
+FIPY_SOLVERS=$SOLVER mpiexec -n 1 smt run --tag $TAG -n $NCPUS --executable python --main threadtest.py params.yaml nthreads=$NTHREADS ncpus=$NCPUS nslots=$NSLOTS solver=$SOLVER $@
